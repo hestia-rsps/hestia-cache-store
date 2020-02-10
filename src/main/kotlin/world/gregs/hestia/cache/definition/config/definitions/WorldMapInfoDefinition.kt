@@ -33,9 +33,9 @@ class WorldMapInfoDefinition : Definition {
     var anInt1080: Int = -1
     var anInt1081 = 0
     var anInt1084 = 0
-    var aString1085: String? = null
+    var name: String? = null
     var anInt1087 = 0
-    var anInt1090: Int = 0
+    var fontSize: Int = 0
     var anInt1091: Int = -1
     var anInt1092 = 0
     var anInt1093: Int = -1
@@ -71,10 +71,10 @@ class WorldMapInfoDefinition : Definition {
         when (opcode) {
             1 -> anInt1062 = packet.readShort()
             2 -> anInt1056 = packet.readShort()
-            3 -> aString1085 = packet.readString()
+            3 -> name = packet.readString()
             4 -> anInt1058 = packet.readMedium()
             5 -> anInt1054 = packet.readMedium()
-            6 -> anInt1090 = packet.readUnsignedByte()
+            6 -> fontSize = packet.readUnsignedByte()
             7 -> {
                 val i_6_ = packet.readUnsignedByte()
                 if (0x1 and i_6_ == 0) {

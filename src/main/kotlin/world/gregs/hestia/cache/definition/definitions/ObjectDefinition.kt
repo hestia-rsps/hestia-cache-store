@@ -34,13 +34,13 @@ class ObjectDefinition : Definition {
     var aBoolean2993: Boolean = false
     var mapDefinitionId: Int = -1
     var anIntArray2995: IntArray? = null
-    var aByteArray2996: ByteArray? = null
+    var recolourPalette: ByteArray? = null
     var aBoolean2998: Boolean = false
     var name: String = "null"
     var animateImmediately: Boolean = true
-    var aBoolean3002: Boolean = false
-    var anInt3006: Int = -1
-    var aBoolean3007: Boolean = false
+    var isMembers: Boolean = false
+    var mapscene: Int = -1
+    var invertMapScene: Boolean = false
     var anInt3008: Int = -1
     var modelSizeY: Int = 128
     var solid: Int = 2
@@ -68,7 +68,7 @@ class ObjectDefinition : Definition {
     var anIntArray3036: IntArray? = null
     var offsetZ: Int = 0
     var anInt3038: Int = -1
-    var rotated: Boolean = false
+    var mirrored: Boolean = false
     var blockFlag: Int = 0
     var brightness: Int = 0
     var originalModelTextures: ShortArray? = null
@@ -146,12 +146,12 @@ class ObjectDefinition : Definition {
             }
             42 -> {
                 val length = packet.readUnsignedByte()
-                aByteArray2996 = ByteArray(length)
+                recolourPalette = ByteArray(length)
                 repeat(length) { count ->
-                    aByteArray2996!![count] = packet.readByte().toByte()
+                    recolourPalette!![count] = packet.readByte().toByte()
                 }
             }
-            62 -> rotated = true
+            62 -> mirrored = true
             64 -> castsShadow = false
             65 -> modelSizeX = packet.readShort()
             66 -> modelSizeZ = packet.readShort()
@@ -212,7 +212,7 @@ class ObjectDefinition : Definition {
             82 -> aBoolean2990 = true
             88 -> aBoolean2972 = false
             89 -> animateImmediately = false
-            91 -> aBoolean3002 = true
+            91 -> isMembers = true
             93 -> {
                 contouredGround = 3.toByte()
                 anInt3023 = packet.readShort()
@@ -233,10 +233,10 @@ class ObjectDefinition : Definition {
                 anInt3013 = packet.readShort()
             }
             101 -> anInt2958 = packet.readUnsignedByte()
-            102 -> anInt3006 = packet.readShort()
+            102 -> mapscene = packet.readShort()
             103 -> culling = 0
             104 -> anInt3024 = packet.readUnsignedByte()
-            105 -> aBoolean3007 = true
+            105 -> invertMapScene = true
             106 -> {
                 val length = packet.readUnsignedByte()
                 var total = 0

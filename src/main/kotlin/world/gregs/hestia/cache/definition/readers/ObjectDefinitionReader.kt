@@ -22,7 +22,7 @@ class ObjectDefinitionReader(cacheStore: CacheStore) : DefinitionReader<ObjectDe
             solid = 0
             projectileClipped = false
         }
-        if (!member && aBoolean3002) {
+        if (!member && isMembers) {
             options = arrayOfNulls(6)
             anIntArray2981 = null
         }
