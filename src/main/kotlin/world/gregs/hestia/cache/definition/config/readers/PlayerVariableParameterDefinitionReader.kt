@@ -1,13 +1,14 @@
 package world.gregs.hestia.cache.definition.config.readers
 
-import world.gregs.hestia.cache.CacheStore
+import org.displee.CacheLibrary
+import world.gregs.hestia.cache.Configs.VARP
 import world.gregs.hestia.cache.definition.config.ConfigReader
 import world.gregs.hestia.cache.definition.config.definitions.PlayerVariableParameterDefinition
 import java.util.concurrent.ConcurrentHashMap
 
-class PlayerVariableParameterDefinitionReader(cacheStore: CacheStore) : ConfigReader<PlayerVariableParameterDefinition>(cacheStore) {
+class PlayerVariableParameterDefinitionReader(cacheStore: CacheLibrary) : ConfigReader<PlayerVariableParameterDefinition>(cacheStore) {
 
-    override val archive: Int = 16
+    override val archive: Int = VARP
 
     override val cache = ConcurrentHashMap<Int, PlayerVariableParameterDefinition>()
 

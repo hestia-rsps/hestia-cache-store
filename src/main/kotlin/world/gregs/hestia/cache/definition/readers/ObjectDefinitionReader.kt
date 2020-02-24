@@ -1,13 +1,14 @@
 package world.gregs.hestia.cache.definition.readers
 
-import world.gregs.hestia.cache.CacheStore
+import org.displee.CacheLibrary
+import world.gregs.hestia.cache.Indices.OBJECTS
 import world.gregs.hestia.cache.definition.DefinitionReader
 import world.gregs.hestia.cache.definition.definitions.ObjectDefinition
 import java.util.concurrent.ConcurrentHashMap
 
-class ObjectDefinitionReader(cacheStore: CacheStore) : DefinitionReader<ObjectDefinition> {
+class ObjectDefinitionReader(cacheStore: CacheLibrary) : DefinitionReader<ObjectDefinition> {
 
-    override val index = cacheStore.getIndex(16)
+    override val index = cacheStore.getIndex(OBJECTS)
 
     override val cache = ConcurrentHashMap<Int, ObjectDefinition>()
 

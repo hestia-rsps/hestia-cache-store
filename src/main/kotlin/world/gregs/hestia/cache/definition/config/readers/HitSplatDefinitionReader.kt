@@ -1,13 +1,14 @@
 package world.gregs.hestia.cache.definition.config.readers
 
-import world.gregs.hestia.cache.CacheStore
+import org.displee.CacheLibrary
+import world.gregs.hestia.cache.Configs.HIT_SPLATS
 import world.gregs.hestia.cache.definition.config.ConfigReader
 import world.gregs.hestia.cache.definition.config.definitions.HitSplatDefinition
 import java.util.concurrent.ConcurrentHashMap
 
-class HitSplatDefinitionReader(cacheStore: CacheStore) : ConfigReader<HitSplatDefinition>(cacheStore) {
+class HitSplatDefinitionReader(cacheStore: CacheLibrary) : ConfigReader<HitSplatDefinition>(cacheStore) {
 
-    override val archive = 46
+    override val archive = HIT_SPLATS
 
     override val cache = ConcurrentHashMap<Int, HitSplatDefinition>()
 

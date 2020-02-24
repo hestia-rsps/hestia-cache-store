@@ -1,13 +1,14 @@
 package world.gregs.hestia.cache.definition.config.readers
 
-import world.gregs.hestia.cache.CacheStore
+import org.displee.CacheLibrary
+import world.gregs.hestia.cache.Configs.STRUTS
 import world.gregs.hestia.cache.definition.config.ConfigReader
 import world.gregs.hestia.cache.definition.config.definitions.StrutDefinition
 import java.util.concurrent.ConcurrentHashMap
 
-class StrutDefinitionReader(cacheStore: CacheStore) : ConfigReader<StrutDefinition>(cacheStore) {
+class StrutDefinitionReader(cacheStore: CacheLibrary) : ConfigReader<StrutDefinition>(cacheStore) {
 
-    override val archive = 26
+    override val archive = STRUTS
 
     override val cache = ConcurrentHashMap<Int, StrutDefinition>()
 

@@ -1,13 +1,14 @@
 package world.gregs.hestia.cache.definition.config.readers
 
-import world.gregs.hestia.cache.CacheStore
+import org.displee.CacheLibrary
+import world.gregs.hestia.cache.Configs.RENDER_ANIMATIONS
 import world.gregs.hestia.cache.definition.config.ConfigReader
 import world.gregs.hestia.cache.definition.config.definitions.RenderAnimationDefinition
 import java.util.concurrent.ConcurrentHashMap
 
-class RenderAnimationDefinitionReader(cacheStore: CacheStore) : ConfigReader<RenderAnimationDefinition>(cacheStore) {
+class RenderAnimationDefinitionReader(cacheStore: CacheLibrary) : ConfigReader<RenderAnimationDefinition>(cacheStore) {
 
-    override val archive: Int = 32
+    override val archive: Int = RENDER_ANIMATIONS
 
     override val cache = ConcurrentHashMap<Int, RenderAnimationDefinition>()
 

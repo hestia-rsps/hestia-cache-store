@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "world.gregs.hestia"
-version = "0.0.1"
+version = "0.0.3"
 
 val bintrayUser: String? by project
 val bintrayKey: String? by project
@@ -24,7 +24,6 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("io.netty:netty-all:4.1.44.Final")
     implementation(fileTree(mapOf("dir" to "libs", "include" to "*.jar")))
 
     //Logging

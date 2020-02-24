@@ -1,13 +1,14 @@
 package world.gregs.hestia.cache.definition.config.readers
 
-import world.gregs.hestia.cache.CacheStore
+import org.displee.CacheLibrary
+import world.gregs.hestia.cache.Configs.CONTAINERS
 import world.gregs.hestia.cache.definition.config.ConfigReader
 import world.gregs.hestia.cache.definition.config.definitions.ItemContainerDefinition
 import java.util.concurrent.ConcurrentHashMap
 
-class ItemContainerDefinitionReader(cacheStore: CacheStore) : ConfigReader<ItemContainerDefinition>(cacheStore) {
+class ItemContainerDefinitionReader(cacheStore: CacheLibrary) : ConfigReader<ItemContainerDefinition>(cacheStore) {
 
-    override val archive: Int = 5
+    override val archive: Int = CONTAINERS
 
     override val cache = ConcurrentHashMap<Int, ItemContainerDefinition>()
 

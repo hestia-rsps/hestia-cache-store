@@ -1,13 +1,14 @@
 package world.gregs.hestia.cache.definition.config.readers
 
-import world.gregs.hestia.cache.CacheStore
+import org.displee.CacheLibrary
+import world.gregs.hestia.cache.Configs.QUESTS
 import world.gregs.hestia.cache.definition.config.ConfigReader
 import world.gregs.hestia.cache.definition.config.definitions.QuestDefinition
 import java.util.concurrent.ConcurrentHashMap
 
-class QuestDefinitionReader(cacheStore: CacheStore) : ConfigReader<QuestDefinition>(cacheStore) {
+class QuestDefinitionReader(cacheStore: CacheLibrary) : ConfigReader<QuestDefinition>(cacheStore) {
 
-    override val archive = 35
+    override val archive = QUESTS
 
     override val cache = ConcurrentHashMap<Int, QuestDefinition>()
 

@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition
 
-import world.gregs.hestia.cache.store.Index
-import world.gregs.hestia.network.packet.PacketReader
+import org.displee.cache.index.Index
+import world.gregs.hestia.io.BufferReader
 import java.util.concurrent.ConcurrentHashMap
 
 interface DefinitionReader<T : Definition> {
@@ -12,8 +12,8 @@ interface DefinitionReader<T : Definition> {
 
     open val size: Int
         get() {
-            val lastArchiveId = index.lastArchiveId
-            return lastArchiveId * 256 + (index.getValidFilesCount(lastArchiveId))
+            val lastArchiveId = index.lastArchive.id
+            return lastArchiveId * 256 + (index.getArchive(lastArchiveId).fileIds.size)
         }
 
     fun get(id: Int, member: Boolean = true): T = cache.getOrPut(id) { create(id, member) }
@@ -21,9 +21,9 @@ interface DefinitionReader<T : Definition> {
     fun create(id: Int, member: Boolean): T
 
     fun T.readData(archive: Int, id: Int, member: Boolean = true) {
-        val data = index.getFile(archive, id)
+        val data = index.getArchive(archive).getFile(id).data
         if (data != null) {
-            readValueLoop(PacketReader(data), member)
+            readValueLoop(BufferReader(data), member)
         }
     }
 
