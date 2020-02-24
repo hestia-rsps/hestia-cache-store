@@ -1,6 +1,6 @@
 package world.gregs.hestia.cache.definition.readers
 
-import org.displee.CacheLibrary
+import com.displee.cache.CacheLibrary
 import world.gregs.hestia.cache.Indices.NPCS
 import world.gregs.hestia.cache.definition.DefinitionReader
 import world.gregs.hestia.cache.definition.definitions.NpcDefinition
@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class NpcDefinitionReader(cacheStore: CacheLibrary) : DefinitionReader<NpcDefinition> {
 
-    override val index = cacheStore.getIndex(NPCS)
+    override val index = cacheStore.index(NPCS)
 
     override val cache = ConcurrentHashMap<Int, NpcDefinition>()
 

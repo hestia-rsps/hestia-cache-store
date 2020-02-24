@@ -1,6 +1,6 @@
 package world.gregs.hestia.cache.definition.config.readers
 
-import org.displee.CacheLibrary
+import com.displee.cache.CacheLibrary
 import world.gregs.hestia.cache.Configs.WORLD_MAP_INFO
 import world.gregs.hestia.cache.definition.config.ConfigReader
 import world.gregs.hestia.cache.definition.config.definitions.WorldMapInfoDefinition

@@ -1,6 +1,6 @@
 package world.gregs.hestia.cache.definition.readers
 
-import org.displee.CacheLibrary
+import com.displee.cache.CacheLibrary
 import world.gregs.hestia.cache.Indices.ANIMATIONS
 import world.gregs.hestia.cache.definition.DefinitionReader
 import world.gregs.hestia.cache.definition.definitions.AnimationDefinition
@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class AnimationDefinitionReader(cacheStore: CacheLibrary) : DefinitionReader<AnimationDefinition> {
 
-    override val index = cacheStore.getIndex(ANIMATIONS)
+    override val index = cacheStore.index(ANIMATIONS)
 
     override val cache = ConcurrentHashMap<Int, AnimationDefinition>()
 

@@ -1,6 +1,6 @@
 package world.gregs.hestia.cache.definition.readers
 
-import org.displee.CacheLibrary
+import com.displee.cache.CacheLibrary
 import world.gregs.hestia.cache.Indices.ENUMS
 import world.gregs.hestia.cache.definition.DefinitionReader
 import world.gregs.hestia.cache.definition.definitions.EnumDefinition
@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class EnumDefinitionReader(cacheStore: CacheLibrary) : DefinitionReader<EnumDefinition> {
 
-    override val index = cacheStore.getIndex(ENUMS)
+    override val index = cacheStore.index(ENUMS)
 
     override val cache = ConcurrentHashMap<Int, EnumDefinition>()
 

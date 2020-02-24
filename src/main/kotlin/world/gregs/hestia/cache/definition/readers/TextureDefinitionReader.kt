@@ -1,6 +1,6 @@
 package world.gregs.hestia.cache.definition.readers
 
-import org.displee.CacheLibrary
+import com.displee.cache.CacheLibrary
 import world.gregs.hestia.cache.Indices.TEXTURE_DEFINITIONS
 import world.gregs.hestia.cache.definition.DefinitionReader
 import world.gregs.hestia.cache.definition.definitions.TextureDefinition
@@ -9,12 +9,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 class TextureDefinitionReader(cacheStore: CacheLibrary) : DefinitionReader<TextureDefinition> {
 
-    override val index = cacheStore.getIndex(TEXTURE_DEFINITIONS)
+    override val index = cacheStore.index(TEXTURE_DEFINITIONS)
 
     override val cache = ConcurrentHashMap<Int, TextureDefinition>()
 
     init {
-        val data = index.getArchive(0).getFile(0).data
+        val data = index.archive(0)?.file(0)?.data
         if(data != null) {
             decode(data)
         }

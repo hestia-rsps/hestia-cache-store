@@ -1,6 +1,6 @@
 package world.gregs.hestia.cache.definition.readers
 
-import org.displee.CacheLibrary
+import com.displee.cache.CacheLibrary
 import world.gregs.hestia.cache.Indices.VAR_BIT
 import world.gregs.hestia.cache.definition.DefinitionReader
 import world.gregs.hestia.cache.definition.definitions.VarBitDefinition
@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class VarBitDefinitionReader(cacheStore: CacheLibrary) : DefinitionReader<VarBitDefinition> {
 
-    override val index = cacheStore.getIndex(VAR_BIT)
+    override val index = cacheStore.index(VAR_BIT)
 
     override val cache = ConcurrentHashMap<Int, VarBitDefinition>()
 

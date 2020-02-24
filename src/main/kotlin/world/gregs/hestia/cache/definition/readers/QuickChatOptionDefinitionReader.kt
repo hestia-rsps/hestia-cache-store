@@ -1,6 +1,6 @@
 package world.gregs.hestia.cache.definition.readers
 
-import org.displee.CacheLibrary
+import com.displee.cache.CacheLibrary
 import world.gregs.hestia.cache.Indices.QUICK_CHAT_MENUS
 import world.gregs.hestia.cache.Indices.QUICK_CHAT_MESSAGES
 import world.gregs.hestia.cache.definition.DefinitionReader
@@ -10,20 +10,20 @@ import java.util.concurrent.ConcurrentHashMap
 
 class QuickChatOptionDefinitionReader(cacheStore: CacheLibrary) : DefinitionReader<QuickChatOptionDefinition> {
 
-    override val index = cacheStore.getIndex(QUICK_CHAT_MESSAGES)
+    override val index = cacheStore.index(QUICK_CHAT_MESSAGES)
 
-    val secondIndex = cacheStore.getIndex(QUICK_CHAT_MENUS)
+    val secondIndex = cacheStore.index(QUICK_CHAT_MENUS)
 
     override val size: Int
-        get() = (index.lastArchive.id * 256 + (index.lastArchive.fileIds.size)) + (secondIndex.lastArchive.id * 256 + (secondIndex.lastArchive.fileIds.size))
+        get() = ((index.last()?.id ?: 0) * 256 + (index.last()?.fileIds()?.size ?: 0)) + ((secondIndex.last()?.id ?: 0) * 256 + (secondIndex.last()?.fileIds()?.size ?: 0))
 
     override val cache = ConcurrentHashMap<Int, QuickChatOptionDefinition>()
 
     override fun create(id: Int, member: Boolean) = QuickChatOptionDefinition().apply {
         val data = if(id < 32768) {
-            index.getArchive(0).getFile(id).data
+            index.archive(0)?.file(id)?.data
         } else {
-            secondIndex.getArchive(0).getFile(id and 0x7fff).data
+            secondIndex.archive(0)?.file(id and 0x7fff)?.data
         }
 
         if(data != null) {

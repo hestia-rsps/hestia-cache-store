@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "world.gregs.hestia"
-version = "0.0.3"
+version = "0.0.4"
 
 val bintrayUser: String? by project
 val bintrayKey: String? by project
@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation(fileTree(mapOf("dir" to "libs", "include" to "*.jar")))
+    implementation("com.displee:rs-cache-library:6.0")
 
     //Logging
     implementation("org.slf4j:slf4j-api:1.7.30")
