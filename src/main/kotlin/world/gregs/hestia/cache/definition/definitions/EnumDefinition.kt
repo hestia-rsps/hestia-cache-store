@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 
 class EnumDefinition : Definition {
     var defaultString = "null"
@@ -23,42 +23,42 @@ class EnumDefinition : Definition {
         return map?.get(id) as? String ?: defaultString
     }
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         when (opcode) {
-            1 -> keyType = byteToChar(packet.readByte().toByte())
-            2 -> valueType = byteToChar(packet.readByte().toByte())
-            3 -> defaultString = packet.readString()
-            4 -> defaultInt = packet.readInt()
+            1 -> keyType = byteToChar(buffer.readByte().toByte())
+            2 -> valueType = byteToChar(buffer.readByte().toByte())
+            3 -> defaultString = buffer.readString()
+            4 -> defaultInt = buffer.readInt()
             5, 6 -> {
-                length = packet.readShort()
+                length = buffer.readShort()
                 val hashtable = HashMap<Int, Any>(calculateCapacity(length))
                 repeat(length) {
-                    val id = packet.readInt()
+                    val id = buffer.readInt()
                     hashtable[id] = if (opcode == 5) {
-                        packet.readString()
+                        buffer.readString()
                     } else {
-                        packet.readInt()
+                        buffer.readInt()
                     }
                 }
                 map = hashtable
             }
             7 -> {
-                val size = packet.readShort()
-                length = packet.readShort()
+                val size = buffer.readShort()
+                length = buffer.readShort()
                 val strings = HashMap<Int, Any>(size)
                 repeat(length) {
-                    val index = packet.readShort()
-                    strings[index] = packet.readString()
+                    val index = buffer.readShort()
+                    strings[index] = buffer.readString()
                 }
                 map = strings
             }
             8 -> {
-                val size = packet.readShort()
-                length = packet.readShort()
+                val size = buffer.readShort()
+                length = buffer.readShort()
                 val integers = HashMap<Int, Any>(size)
                 repeat(length) {
-                    val index = packet.readShort()
-                    integers[index] = packet.readInt()
+                    val index = buffer.readShort()
+                    integers[index] = buffer.readInt()
                 }
                 map = integers
             }

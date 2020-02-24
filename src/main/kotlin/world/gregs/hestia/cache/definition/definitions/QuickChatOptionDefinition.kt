@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 
 class QuickChatOptionDefinition : Definition {
     var optionText: String? = null
@@ -10,26 +10,26 @@ class QuickChatOptionDefinition : Definition {
     var dynamicData: IntArray? = null
     var staticData: CharArray? = null
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         when (opcode) {
-            1 -> optionText = packet.readString()
+            1 -> optionText = buffer.readString()
             2 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 quickReplyOptions = IntArray(length)
                 navigateChars = CharArray(length)
                 repeat(length) { count ->
-                    quickReplyOptions!![count] = packet.readShort()
-                    val b = packet.readByte().toByte()
+                    quickReplyOptions!![count] = buffer.readShort()
+                    val b = buffer.readByte().toByte()
                     navigateChars!![count] = if (b.toInt() == 0) '\u0000' else byteToChar(b)
                 }
             }
             3 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 staticData = CharArray(length)
                 dynamicData = IntArray(length)
                 repeat(length) { count ->
-                    dynamicData!![count] = packet.readShort()
-                    val b = packet.readByte().toByte()
+                    dynamicData!![count] = buffer.readShort()
+                    val b = buffer.readByte().toByte()
                     staticData!![count] = if (b.toInt() != 0) byteToChar(b) else '\u0000'
                 }
             }

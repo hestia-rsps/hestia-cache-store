@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 import java.util.*
 
 class ItemDefinition : Definition {
@@ -69,136 +69,136 @@ class ItemDefinition : Definition {
     var maleWieldX = 0
     var unnoted = false
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         when (opcode) {
-            1 -> modelId = packet.readShort()
-            2 -> name = packet.readString()
-            4 -> spriteScale = packet.readShort()
-            5 -> spritePitch = packet.readShort()
-            6 -> spriteCameraRoll = packet.readShort()
+            1 -> modelId = buffer.readShort()
+            2 -> name = buffer.readString()
+            4 -> spriteScale = buffer.readShort()
+            5 -> spritePitch = buffer.readShort()
+            6 -> spriteCameraRoll = buffer.readShort()
             7 -> {
-                spriteTranslateX = packet.readShort()
+                spriteTranslateX = buffer.readShort()
                 if (spriteTranslateX > 32767) {
                     spriteTranslateX -= 65536
                 }
             }
             8 -> {
-                spriteTranslateY = packet.readShort()
+                spriteTranslateY = buffer.readShort()
                 if (spriteTranslateY > 32767) {
                     spriteTranslateY -= 65536
                 }
             }
             11 -> stackable = 1
-            12 -> cost = packet.readInt()
+            12 -> cost = buffer.readInt()
             16 -> members = true
-            18 -> multiStackSize = packet.readShort()
-            23 -> primaryMaleModel = packet.readShort()
-            24 -> secondaryMaleModel = packet.readShort()
-            25 -> primaryFemaleModel = packet.readShort()
-            26 -> secondaryFemaleModel = packet.readShort()
-            in 30..34 -> floorOptions[opcode - 30] = packet.readString()
-            in 35..39 -> options[opcode - 35] = packet.readString()
+            18 -> multiStackSize = buffer.readShort()
+            23 -> primaryMaleModel = buffer.readShort()
+            24 -> secondaryMaleModel = buffer.readShort()
+            25 -> primaryFemaleModel = buffer.readShort()
+            26 -> secondaryFemaleModel = buffer.readShort()
+            in 30..34 -> floorOptions[opcode - 30] = buffer.readString()
+            in 35..39 -> options[opcode - 35] = buffer.readString()
             40 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 originalColours = ShortArray(length)
                 modifiedColours = ShortArray(length)
                 repeat(length) { count ->
-                    originalColours!![count] = packet.readShort().toShort()
-                    modifiedColours!![count] = packet.readShort().toShort()
+                    originalColours!![count] = buffer.readShort().toShort()
+                    modifiedColours!![count] = buffer.readShort().toShort()
                 }
             }
             41 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 originalTextureColours = ShortArray(length)
                 modifiedTextureColours = ShortArray(length)
                 repeat (length) { count ->
-                    originalTextureColours!![count] = packet.readShort().toShort()
-                    modifiedTextureColours!![count] = packet.readShort().toShort()
+                    originalTextureColours!![count] = buffer.readShort().toShort()
+                    modifiedTextureColours!![count] = buffer.readShort().toShort()
                 }
             }
             42 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 recolourPalette = ByteArray(length)
                 repeat(length) { count ->
-                    recolourPalette!![count] = packet.readByte().toByte()
+                    recolourPalette!![count] = buffer.readByte().toByte()
                 }
             }
             65 -> unnoted = true
-            78 -> tertiaryMaleModel = packet.readShort()
-            79 -> tertiaryFemaleModel = packet.readShort()
-            90 -> primaryMaleDialogueHead = packet.readShort()
-            91 -> primaryFemaleDialogueHead = packet.readShort()
-            92 -> secondaryMaleDialogueHead = packet.readShort()
-            93 -> secondaryFemaleDialogueHead = packet.readShort()
-            95 -> spriteCameraYaw = packet.readShort()
-            96 -> dummyItem = packet.readUnsignedByte()
-            97 -> noteId = packet.readShort()
-            98 -> notedTemplateId = packet.readShort()
+            78 -> tertiaryMaleModel = buffer.readShort()
+            79 -> tertiaryFemaleModel = buffer.readShort()
+            90 -> primaryMaleDialogueHead = buffer.readShort()
+            91 -> primaryFemaleDialogueHead = buffer.readShort()
+            92 -> secondaryMaleDialogueHead = buffer.readShort()
+            93 -> secondaryFemaleDialogueHead = buffer.readShort()
+            95 -> spriteCameraYaw = buffer.readShort()
+            96 -> dummyItem = buffer.readUnsignedByte()
+            97 -> noteId = buffer.readShort()
+            98 -> notedTemplateId = buffer.readShort()
             in 100..109 -> {
                 if (stackIds == null) {
                     stackAmounts = IntArray(10)
                     stackIds = IntArray(10)
                 }
-                stackIds!![opcode - 100] = packet.readShort()
-                stackAmounts!![opcode - 100] = packet.readShort()
+                stackIds!![opcode - 100] = buffer.readShort()
+                stackAmounts!![opcode - 100] = buffer.readShort()
             }
-            110 -> groundScaleX = packet.readShort()
-            111 -> groundScaleY = packet.readShort()
-            112 -> groundScaleZ = packet.readShort()
-            113 -> ambience = packet.readByte()
-            114 -> diffusion = packet.readByte() * 5
-            115 -> team = packet.readUnsignedByte()
-            121 -> lendId = packet.readShort()
-            122 -> lendTemplateId = packet.readShort()
+            110 -> groundScaleX = buffer.readShort()
+            111 -> groundScaleY = buffer.readShort()
+            112 -> groundScaleZ = buffer.readShort()
+            113 -> ambience = buffer.readByte()
+            114 -> diffusion = buffer.readByte() * 5
+            115 -> team = buffer.readUnsignedByte()
+            121 -> lendId = buffer.readShort()
+            122 -> lendTemplateId = buffer.readShort()
             125 -> {
-                maleWieldX = packet.readByte() shl 2
-                maleWieldY = packet.readByte() shl 2
-                maleWieldZ = packet.readByte() shl 2
+                maleWieldX = buffer.readByte() shl 2
+                maleWieldY = buffer.readByte() shl 2
+                maleWieldZ = buffer.readByte() shl 2
             }
             126 -> {
-                femaleWieldX = packet.readByte() shl 2
-                femaleWieldY = packet.readByte() shl 2
-                femaleWieldZ = packet.readByte() shl 2
+                femaleWieldX = buffer.readByte() shl 2
+                femaleWieldY = buffer.readByte() shl 2
+                femaleWieldZ = buffer.readByte() shl 2
             }
             127 -> {
-                primaryCursorOpcode = packet.readUnsignedByte()
-                primaryCursor = packet.readShort()
+                primaryCursorOpcode = buffer.readUnsignedByte()
+                primaryCursor = buffer.readShort()
             }
             128 -> {
-                secondaryCursorOpcode = packet.readUnsignedByte()
-                secondaryCursor = packet.readShort()
+                secondaryCursorOpcode = buffer.readUnsignedByte()
+                secondaryCursor = buffer.readShort()
             }
             129 -> {
-                primaryInterfaceCursorOpcode = packet.readUnsignedByte()
-                primaryInterfaceCursor = packet.readShort()
+                primaryInterfaceCursorOpcode = buffer.readUnsignedByte()
+                primaryInterfaceCursor = buffer.readShort()
             }
             130 -> {
-                secondaryInterfaceCursorOpcode = packet.readUnsignedByte()
-                secondaryInterfaceCursor = packet.readShort()
+                secondaryInterfaceCursorOpcode = buffer.readUnsignedByte()
+                secondaryInterfaceCursor = buffer.readShort()
             }
             132 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 campaigns = IntArray(length)
                 repeat(length) { count ->
-                    campaigns!![count] = packet.readShort()
+                    campaigns!![count] = buffer.readShort()
                 }
             }
-            134 -> pickSizeShift = packet.readUnsignedByte()
-            139 -> bindId = packet.readShort()
-            140 -> bindTemplateId = packet.readShort()
+            134 -> pickSizeShift = buffer.readUnsignedByte()
+            139 -> bindId = buffer.readShort()
+            140 -> bindTemplateId = buffer.readShort()
             249 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 if (params == null) {
                     val initialCapacity = calculateCapacity(length)
                     params = HashMap(initialCapacity)
                 }
                 repeat(length) {
-                    val isString = packet.readUnsignedBoolean()
-                    val id = packet.readMedium()
+                    val isString = buffer.readUnsignedBoolean()
+                    val id = buffer.readMedium()
                     params!![id.toLong()] = if (isString) {
-                        packet.readString()
+                        buffer.readString()
                     } else {
-                        packet.readInt()
+                        buffer.readInt()
                     }
                 }
             }

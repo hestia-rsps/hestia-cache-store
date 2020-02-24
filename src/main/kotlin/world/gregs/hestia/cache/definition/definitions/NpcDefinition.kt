@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 import java.util.*
 
 class NpcDefinition : Definition {
@@ -71,82 +71,82 @@ class NpcDefinition : Definition {
     var anInt2886 = -1
     var id = 0
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         when (opcode) {
             1 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 modelIds = IntArray(length)
                 repeat(length) { count ->
-                    modelIds!![count] = packet.readShort()
+                    modelIds!![count] = buffer.readShort()
                     if (modelIds!![count] == 65535) {
                         modelIds!![count] = -1
                     }
                 }
             }
-            2 -> name = packet.readString()
-            12 -> size = packet.readUnsignedByte()
-            in 30..34 -> options[-30 + opcode] = packet.readString()
+            2 -> name = buffer.readString()
+            12 -> size = buffer.readUnsignedByte()
+            in 30..34 -> options[-30 + opcode] = buffer.readString()
             40 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 modifiedColours = ShortArray(length)
                 originalColours = ShortArray(length)
                 repeat(length) { count ->
-                    originalColours!![count] = packet.readShort().toShort()
-                    modifiedColours!![count] = packet.readShort().toShort()
+                    originalColours!![count] = buffer.readShort().toShort()
+                    modifiedColours!![count] = buffer.readShort().toShort()
                 }
             }
             41 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 modifiedTextureColours = ShortArray(length)
                 originalTextureColours = ShortArray(length)
                 repeat(length) { count ->
-                    originalTextureColours!![count] = packet.readShort().toShort()
-                    modifiedTextureColours!![count] = packet.readShort().toShort()
+                    originalTextureColours!![count] = buffer.readShort().toShort()
+                    modifiedTextureColours!![count] = buffer.readShort().toShort()
                 }
             }
             42 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 recolourPalette = ByteArray(length)
                 repeat(length) { count ->
-                    recolourPalette!![count] = packet.readByte().toByte()
+                    recolourPalette!![count] = buffer.readByte().toByte()
                 }
             }
             60 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 dialogueModels = IntArray(length)
                 repeat(length) { count ->
-                    dialogueModels!![count] = packet.readShort()
+                    dialogueModels!![count] = buffer.readShort()
                 }
             }
             93 -> drawMinimapDot = false
-            95 -> combat = packet.readShort()
-            97 -> scaleXY = packet.readShort()
-            98 -> scaleZ = packet.readShort()
+            95 -> combat = buffer.readShort()
+            97 -> scaleXY = buffer.readShort()
+            98 -> scaleZ = buffer.readShort()
             99 -> priorityRender = true
-            100 -> lightModifier = packet.readByte()
-            101 -> shadowModifier = 5 * packet.readByte()
-            102 -> headIcon = packet.readShort()
-            103 -> rotation = packet.readShort()
+            100 -> lightModifier = buffer.readByte()
+            101 -> shadowModifier = 5 * buffer.readByte()
+            102 -> headIcon = buffer.readShort()
+            103 -> rotation = buffer.readShort()
             106, 118 -> {
-                varbit = packet.readShort()
+                varbit = buffer.readShort()
                 if (varbit == 65535) {
                     varbit = -1
                 }
-                varp = packet.readShort()
+                varp = buffer.readShort()
                 if (varp == 65535) {
                     varp = -1
                 }
                 var last = -1
                 if (opcode == 118) {
-                    last = packet.readShort()
+                    last = buffer.readShort()
                     if (last == 65535) {
                         last = -1
                     }
                 }
-                val count = packet.readUnsignedByte()
+                val count = buffer.readUnsignedByte()
                 morphs = IntArray(count + 2)
                 for(index in 0..count) {
-                    morphs!![index] = packet.readShort()
+                    morphs!![index] = buffer.readShort()
                     if (morphs!![index] == 65535) {
                         morphs!![index] = -1
                     }
@@ -157,107 +157,107 @@ class NpcDefinition : Definition {
             109 -> slowWalk = false
             111 -> animateIdle = false
             113 -> {
-                aShort2863 = packet.readShort().toShort()
-                aShort2871 = packet.readShort().toShort()
+                aShort2863 = buffer.readShort().toShort()
+                aShort2871 = buffer.readShort().toShort()
             }
             114 -> {
-                aByte2877 = packet.readByte().toByte()
-                aByte2868 = packet.readByte().toByte()
+                aByte2877 = buffer.readByte().toByte()
+                aByte2868 = buffer.readByte().toByte()
             }
-            119 -> walkMask = packet.readByte().toByte()
+            119 -> walkMask = buffer.readByte().toByte()
             121 -> {
                 translations = arrayOfNulls(modelIds!!.size)
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 repeat(length) {
-                    val index = packet.readUnsignedByte()
+                    val index = buffer.readUnsignedByte()
                     translations!![index] = IntArray(3)
                     val `is` = translations!![index]
-                    `is`!![0] = packet.readByte()
-                    `is`[1] = packet.readByte()
-                    `is`[2] = packet.readByte()
+                    `is`!![0] = buffer.readByte()
+                    `is`[1] = buffer.readByte()
+                    `is`[2] = buffer.readByte()
                 }
             }
-            122 -> anInt2878 = packet.readShort()
-            123 -> height = packet.readShort()
-            125 -> respawnDirection = packet.readByte().toByte()
-            127 -> renderEmote = packet.readShort()
-            128 -> packet.readUnsignedByte()
+            122 -> anInt2878 = buffer.readShort()
+            123 -> height = buffer.readShort()
+            125 -> respawnDirection = buffer.readByte().toByte()
+            127 -> renderEmote = buffer.readShort()
+            128 -> buffer.readUnsignedByte()
             134 -> {
-                anInt2812 = packet.readShort()
+                anInt2812 = buffer.readShort()
                 if (anInt2812 == 65535) {
                     anInt2812 = -1
                 }
-                anInt2833 = packet.readShort()
+                anInt2833 = buffer.readShort()
                 if (anInt2833 == 65535) {
                     anInt2833 = -1
                 }
-                anInt2809 = packet.readShort()
+                anInt2809 = buffer.readShort()
                 if (anInt2809 == 65535) {
                     anInt2809 = -1
                 }
-                anInt2810 = packet.readShort()
+                anInt2810 = buffer.readShort()
                 if (anInt2810 == 65535) {
                     anInt2810 = -1
                 }
-                anInt2864 = packet.readUnsignedByte()
+                anInt2864 = buffer.readUnsignedByte()
             }
             135 -> {
-                anInt2815 = packet.readUnsignedByte()
-                anInt2859 = packet.readShort()
+                anInt2815 = buffer.readUnsignedByte()
+                anInt2859 = buffer.readShort()
             }
             136 -> {
-                anInt2856 = packet.readUnsignedByte()
-                anInt2886 = packet.readShort()
+                anInt2856 = buffer.readUnsignedByte()
+                anInt2886 = buffer.readShort()
             }
-            137 -> attackCursor = packet.readShort()
-            138 -> armyIcon = packet.readShort()
-            139 -> spriteId = packet.readShort()
-            140 -> anInt2828 = packet.readUnsignedByte()
+            137 -> attackCursor = buffer.readShort()
+            138 -> armyIcon = buffer.readShort()
+            139 -> spriteId = buffer.readShort()
+            140 -> anInt2828 = buffer.readUnsignedByte()
             141 -> aBoolean2843 = true
-            142 -> mapFunction = packet.readShort()
+            142 -> mapFunction = buffer.readShort()
             143 -> aBoolean2825 = true
             in 150..154 -> {
-                options[opcode - 150] = packet.readString()
+                options[opcode - 150] = buffer.readString()
                 if (!member) {
                     options[opcode - 150] = null
                 }
             }
             155 -> {
-                aByte2836 = packet.readByte().toByte()
-                aByte2853 = packet.readByte().toByte()
-                aByte2857 = packet.readByte().toByte()
-                aByte2839 = packet.readByte().toByte()
+                aByte2836 = buffer.readByte().toByte()
+                aByte2853 = buffer.readByte().toByte()
+                aByte2857 = buffer.readByte().toByte()
+                aByte2839 = buffer.readByte().toByte()
             }
             158 -> mainOptionIndex = 1.toByte()
             159 -> mainOptionIndex = 0.toByte()
             160 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 campaigns = IntArray(length)
                 repeat(length) { count ->
-                    campaigns!![count] = packet.readShort()
+                    campaigns!![count] = buffer.readShort()
                 }
             }
             162 -> aBoolean2883 = true
-            163 -> anInt2803 = packet.readUnsignedByte()
+            163 -> anInt2803 = buffer.readUnsignedByte()
             164 -> {
-                anInt2844 = packet.readShort()
-                anInt2852 = packet.readShort()
+                anInt2844 = buffer.readShort()
+                anInt2852 = buffer.readShort()
             }
-            165 -> anInt2831 = packet.readUnsignedByte()
-            168 -> anInt2862 = packet.readUnsignedByte()
+            165 -> anInt2831 = buffer.readUnsignedByte()
+            168 -> anInt2862 = buffer.readUnsignedByte()
             249 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 if (params == null) {
                     val initialCapacity = calculateCapacity(length)
                     params = HashMap(initialCapacity)
                 }
                 repeat(length) {
-                    val isString = packet.readUnsignedByte() == 1
-                    val id = packet.readMedium()
+                    val isString = buffer.readUnsignedByte() == 1
+                    val id = buffer.readMedium()
                     params!![id.toLong()] = if (isString) {
-                        packet.readString()
+                        buffer.readString()
                     } else {
-                        packet.readInt()
+                        buffer.readInt()
                     }
                 }
             }

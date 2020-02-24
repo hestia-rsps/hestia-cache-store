@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 
 class AnimationDefinition : Definition {
     var anIntArray690: IntArray? = null
@@ -55,57 +55,57 @@ class AnimationDefinition : Definition {
         }
     }
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         when(opcode) {
             1 -> {
-                val length = packet.readShort()
+                val length = buffer.readShort()
                 durations = IntArray(length)
                 repeat(length) { count ->
-                    durations!![count] = packet.readShort()
+                    durations!![count] = buffer.readShort()
                 }
                 primaryFrames = IntArray(length)
                 repeat(length) { count ->
-                    primaryFrames!![count] = packet.readShort()
+                    primaryFrames!![count] = buffer.readShort()
                 }
                 repeat(length) { count ->
-                    primaryFrames!![count] = (packet.readShort() shl 16) + primaryFrames!![count]
+                    primaryFrames!![count] = (buffer.readShort() shl 16) + primaryFrames!![count]
                 }
             }
-            2 -> loopOffset = packet.readShort()
+            2 -> loopOffset = buffer.readShort()
             3 -> {
                 interleaveOrder = BooleanArray(256)
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 repeat(length) {
-                    interleaveOrder!![packet.readUnsignedByte()] = true
+                    interleaveOrder!![buffer.readUnsignedByte()] = true
                 }
             }
-            5 -> priority = packet.readUnsignedByte()
-            6 -> leftHand = packet.readShort()
-            7 -> rightHand = packet.readShort()
-            8 -> maxLoops = packet.readUnsignedByte()
-            9 -> animatingPrecedence = packet.readUnsignedByte()
-            10 -> walkingPrecedence = packet.readUnsignedByte()
-            11 -> replayMode = packet.readUnsignedByte()
+            5 -> priority = buffer.readUnsignedByte()
+            6 -> leftHand = buffer.readShort()
+            7 -> rightHand = buffer.readShort()
+            8 -> maxLoops = buffer.readUnsignedByte()
+            9 -> animatingPrecedence = buffer.readUnsignedByte()
+            10 -> walkingPrecedence = buffer.readUnsignedByte()
+            11 -> replayMode = buffer.readUnsignedByte()
             12 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 secondaryFrames = IntArray(length)
                 repeat(length) { count ->
-                    secondaryFrames!![count] = packet.readShort()
+                    secondaryFrames!![count] = buffer.readShort()
                 }
                 repeat(length) { count ->
-                    secondaryFrames!![count] = (packet.readShort() shl 16) + secondaryFrames!![count]
+                    secondaryFrames!![count] = (buffer.readShort() shl 16) + secondaryFrames!![count]
                 }
             }
             13 -> {
-                val length = packet.readShort()
+                val length = buffer.readShort()
                 anIntArrayArray700 = arrayOfNulls(length)
                 repeat(length) { count ->
-                    val size = packet.readUnsignedByte()
+                    val size = buffer.readUnsignedByte()
                     if (size > 0) {
                         anIntArrayArray700!![count] = IntArray(size)
-                        anIntArrayArray700!![count]!![0] = packet.readMedium()
+                        anIntArrayArray700!![count]!![0] = buffer.readMedium()
                         for(index in 1 until size) {
-                            anIntArrayArray700!![count]!![index] = packet.readShort()
+                            anIntArrayArray700!![count]!![index] = buffer.readShort()
                         }
                     }
                 }
@@ -120,7 +120,7 @@ class AnimationDefinition : Definition {
                         anIntArray701!![index] = 255
                     }
                 }
-                anIntArray701!![packet.readUnsignedByte()] = packet.readUnsignedByte()
+                anIntArray701!![buffer.readUnsignedByte()] = buffer.readUnsignedByte()
             }
             20 -> {
                 if (anIntArray690 == null || anIntArray692 == null) {
@@ -131,9 +131,9 @@ class AnimationDefinition : Definition {
                         anIntArray692!![index] = 256
                     }
                 }
-                val length = packet.readUnsignedByte()
-                anIntArray690!![length] = packet.readShort()
-                anIntArray692!![length] = packet.readShort()
+                val length = buffer.readUnsignedByte()
+                anIntArray690!![length] = buffer.readShort()
+                anIntArray692!![length] = buffer.readShort()
             }
         }
     }

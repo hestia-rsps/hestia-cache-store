@@ -1,25 +1,16 @@
-package world.gregs.hestia.network.packet
+package world.gregs.hestia.io
 
-import io.netty.buffer.ByteBuf
+import java.nio.ByteBuffer
 
 /**
  * A unit of byte data
  */
-interface Packet {
-    /**
-     * Operation code
-     */
-    var opcode: Int
-
-    /**
-     * Packet encode type
-     */
-    val type: Type
+interface Reader {
 
     /**
      * Packet buffer
      */
-    val buffer: ByteBuf
+    val buffer: ByteBuffer
 
     /**
      * Starting length of the packet
@@ -141,16 +132,6 @@ interface Packet {
     fun readBytes(array: ByteArray, offset: Int, length: Int = array.size)
 
     /**
-     * Releases the buffer
-     */
-    fun release()
-
-    /**
-     * Retains the buffer
-     */
-    fun retain()
-
-    /**
      * Skips the [amount] bytes.
      * @param amount Number of bytes to skip
      */
@@ -161,40 +142,6 @@ interface Packet {
      * @return [Int]
      */
     fun readableBytes(): Int
-
-    /**
-     * Resets the reader index
-     * @return [Int]
-     */
-    fun resetReader()
-
-    /**
-     * Resets the writer index
-     * @return [Int]
-     */
-    fun resetWriter()
-
-    /**
-     * Marks the reader index
-     */
-    fun markReader()
-
-    /**
-     * Marks the writer index
-     */
-    fun markWriter()
-
-    /**
-     * Returns the reader index
-     * @return reader index
-     */
-    fun reader(): Int
-
-    /**
-     * Returns the writer index
-     * @return writer index
-     */
-    fun writer(): Int
 
     /**
      * Reads [length] number of bytes with [type] and [order]
@@ -217,12 +164,12 @@ interface Packet {
     /**
      * Enables individual decoded byte writing aka 'bit access'
      */
-    fun startBitAccess(): Packet
+    fun startBitAccess(): Reader
 
     /**
      * Disables 'bit access'
      */
-    fun finishBitAccess(): Packet
+    fun finishBitAccess(): Reader
 
     /**
      * Writes a bit during 'bit access'
@@ -230,13 +177,4 @@ interface Packet {
      * @param value bit value to be set
      */
     fun readBits(bitCount: Int): Int
-
-    /**
-     * PacketType
-     */
-    enum class Type(val int: Int) {
-        STANDARD(0),
-        VAR_BYTE(-1),
-        VAR_SHORT(-2);
-    }
 }

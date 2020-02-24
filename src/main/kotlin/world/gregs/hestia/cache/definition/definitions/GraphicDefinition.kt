@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 
 class GraphicDefinition : Definition {
     var id = 0
@@ -20,15 +20,15 @@ class GraphicDefinition : Definition {
     var sizeXY: Int = 128
     var aBoolean2402: Boolean = false
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         when (opcode) {
-            1 -> modelId = packet.readShort()
-            2 -> animationId = packet.readShort()
-            4 -> sizeXY = packet.readShort()
-            5 -> sizeZ = packet.readShort()
-            6 -> rotation = packet.readShort()
-            7 -> ambience = packet.readUnsignedByte()
-            8 -> contrast = packet.readUnsignedByte()
+            1 -> modelId = buffer.readShort()
+            2 -> animationId = buffer.readShort()
+            4 -> sizeXY = buffer.readShort()
+            5 -> sizeZ = buffer.readShort()
+            6 -> rotation = buffer.readShort()
+            7 -> ambience = buffer.readUnsignedByte()
+            8 -> contrast = buffer.readUnsignedByte()
             9 -> {
                 aByte2381 = 3.toByte()
                 anInt2385 = 8224
@@ -39,32 +39,32 @@ class GraphicDefinition : Definition {
             13 -> aByte2381 = 5.toByte()
             14 -> {
                 aByte2381 = 2.toByte()
-                anInt2385 = 256 * packet.readUnsignedByte()
+                anInt2385 = 256 * buffer.readUnsignedByte()
             }
             15 -> {
                 aByte2381 = 3.toByte()
-                anInt2385 = packet.readShort()
+                anInt2385 = buffer.readShort()
             }
             16 -> {
                 aByte2381 = 3.toByte()
-                anInt2385 = packet.readInt()
+                anInt2385 = buffer.readInt()
             }
             40 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 modifiedColours = ShortArray(length)
                 originalColours = ShortArray(length)
                 repeat(length) { count ->
-                    originalColours!![count] = packet.readShort().toShort()
-                    modifiedColours!![count] = packet.readShort().toShort()
+                    originalColours!![count] = buffer.readShort().toShort()
+                    modifiedColours!![count] = buffer.readShort().toShort()
                 }
             }
             41 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 modifiedTextureColours = ShortArray(length)
                 originalTextureColours = ShortArray(length)
                 repeat(length) { count ->
-                    originalTextureColours!![count] = packet.readShort().toShort()
-                    modifiedTextureColours!![count] = packet.readShort().toShort()
+                    originalTextureColours!![count] = buffer.readShort().toShort()
+                    modifiedTextureColours!![count] = buffer.readShort().toShort()
                 }
             }
         }

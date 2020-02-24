@@ -1,26 +1,26 @@
 package world.gregs.hestia.cache.definition.config.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 
 class StrutDefinition : Definition {
 
     var params: HashMap<Long, Any>? = null
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         if (opcode == 249) {
-            val length = packet.readUnsignedByte()
+            val length = buffer.readUnsignedByte()
             if (params == null) {
                 val initialCapacity = calculateCapacity(length)
                 params = HashMap(initialCapacity)
             }
             repeat(length) {
-                val isString = packet.readUnsignedBoolean()
-                val id = packet.readMedium()
+                val isString = buffer.readUnsignedBoolean()
+                val id = buffer.readMedium()
                 params!![id.toLong()] = if (isString) {
-                    packet.readString()
+                    buffer.readString()
                 } else {
-                    packet.readInt()
+                    buffer.readInt()
                 }
             }
         }

@@ -25,6 +25,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("io.netty:netty-all:4.1.44.Final")
+    implementation(fileTree(mapOf("dir" to "libs", "include" to "*.jar")))
 
     //Logging
     implementation("org.slf4j:slf4j-api:1.7.30")

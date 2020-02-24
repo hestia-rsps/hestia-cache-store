@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 import java.util.*
 
 class WorldMapDefinition : Definition {
@@ -18,26 +18,26 @@ class WorldMapDefinition : Definition {
     var anInt9547: Int = -1
     var sections: LinkedList<WorldMapSectionDefinition>? = null
 
-    override fun readValueLoop(packet: Packet, member: Boolean) {
-        map = packet.readString()
-        name = packet.readString()
-        position = packet.readInt()
-        anInt9542 = packet.readInt()//Size?
-        static = packet.readUnsignedBoolean()
-        anInt9547 = packet.readUnsignedByte()//Always zero except "Braindeath Island" which is -1
-        packet.readUnsignedByte()
+    override fun readValueLoop(buffer: Reader, member: Boolean) {
+        map = buffer.readString()
+        name = buffer.readString()
+        position = buffer.readInt()
+        anInt9542 = buffer.readInt()//Size?
+        static = buffer.readUnsignedBoolean()
+        anInt9547 = buffer.readUnsignedByte()//Always zero except "Braindeath Island" which is -1
+        buffer.readUnsignedByte()
 
         if (anInt9547 == 255) {
             anInt9547 = 0
         }
         sections = LinkedList()
-        val length = packet.readUnsignedByte()
+        val length = buffer.readUnsignedByte()
         repeat(length) {
-            sections!!.addLast(WorldMapSectionDefinition(packet.readUnsignedByte(), packet.readShort(), packet.readShort(), packet.readShort(), packet.readShort(), packet.readShort(), packet.readShort(), packet.readShort(), packet.readShort()))
+            sections!!.addLast(WorldMapSectionDefinition(buffer.readUnsignedByte(), buffer.readShort(), buffer.readShort(), buffer.readShort(), buffer.readShort(), buffer.readShort(), buffer.readShort(), buffer.readShort(), buffer.readShort()))
         }
     }
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

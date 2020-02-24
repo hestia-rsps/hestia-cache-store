@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.config.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 
 class QuestDefinition : Definition {
     var anInt2188 = -1
@@ -28,115 +28,115 @@ class QuestDefinition : Definition {
         }
     }
 
-    private fun Packet.readPrefixedString(): String {
-        val head: Byte = buffer.readByte()
+    private fun Reader.readPrefixedString(): String {
+        val head: Byte = buffer.get()
         check(head.toInt() == 0) { "Bad version number in gjstr2" }
-        val i: Int = buffer.readerIndex()
-        while (buffer.readByte() != 0.toByte()) { /* empty */
+        val i: Int = buffer.position()
+        while (buffer.get() != 0.toByte()) { /* empty */
         }
-        val start: Int = buffer.readerIndex() + -i + -1
+        val start: Int = buffer.position() + -i + -1
         return if (start == 0) {
             ""
         } else {
             val cs = CharArray(start)
             var index = 0
             repeat(start) { count ->
-                cs[index++] = byteToChar(buffer.getByte(count + i))
+                cs[index++] = byteToChar(buffer.get(count + i))
             }
             return String(cs, 0, index)
         }
     }
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         when (opcode) {
-            1 -> aString2211 = packet.readPrefixedString()
-            2 -> aString2202 = packet.readPrefixedString()
+            1 -> aString2211 = buffer.readPrefixedString()
+            2 -> aString2202 = buffer.readPrefixedString()
             3 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 anIntArrayArray2208 = Array(length) { IntArray(3) }
                 repeat(length) { count ->
-                    anIntArrayArray2208!![count][0] = packet.readShort()
-                    anIntArrayArray2208!![count][1] = packet.readInt()
-                    anIntArrayArray2208!![count][2] = packet.readInt()
+                    anIntArrayArray2208!![count][0] = buffer.readShort()
+                    anIntArrayArray2208!![count][1] = buffer.readInt()
+                    anIntArrayArray2208!![count][2] = buffer.readInt()
                 }
             }
             4 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 anIntArrayArray2193 = Array(length) { IntArray(3) }
                 repeat(length) { count ->
-                    anIntArrayArray2193!![count][0] = packet.readShort()
-                    anIntArrayArray2193!![count][1] = packet.readInt()
-                    anIntArrayArray2193!![count][2] = packet.readInt()
+                    anIntArrayArray2193!![count][0] = buffer.readShort()
+                    anIntArrayArray2193!![count][1] = buffer.readInt()
+                    anIntArrayArray2193!![count][2] = buffer.readInt()
                 }
             }
-            5 -> packet.readShort()
-            6 -> packet.readUnsignedByte()
-            7 -> packet.readUnsignedByte()
-            9 -> packet.readUnsignedByte()
+            5 -> buffer.readShort()
+            6 -> buffer.readUnsignedByte()
+            7 -> buffer.readUnsignedByte()
+            9 -> buffer.readUnsignedByte()
             10 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 anIntArray2209 = IntArray(length)
                 repeat(length) { count ->
-                    anIntArray2209!![count] = packet.readInt()
+                    anIntArray2209!![count] = buffer.readInt()
                 }
             }
-            12 -> packet.readInt()
+            12 -> buffer.readInt()
             13 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 anIntArray2207 = IntArray(length)
                 repeat(length) { count ->
-                    anIntArray2207!![count] = packet.readShort()
+                    anIntArray2207!![count] = buffer.readShort()
                 }
             }
             14 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 anIntArrayArray2210 = Array(length) { IntArray(2) }
                 repeat(length) { count ->
-                    anIntArrayArray2210!![count][0] = packet.readUnsignedByte()
-                    anIntArrayArray2210!![count][1] = packet.readUnsignedByte()
+                    anIntArrayArray2210!![count][0] = buffer.readUnsignedByte()
+                    anIntArrayArray2210!![count][1] = buffer.readUnsignedByte()
                 }
             }
-            15 -> packet.readShort()
-            17 -> anInt2188 = packet.readShort()
+            15 -> buffer.readShort()
+            17 -> anInt2188 = buffer.readShort()
             18 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 aStringArray2201 = arrayOfNulls(length)
                 anIntArray2200 = IntArray(length)
                 anIntArray2199 = IntArray(length)
                 anIntArray2191 = IntArray(length)
                 repeat(length) { count ->
-                    anIntArray2200!![count] = packet.readInt()
-                    anIntArray2191!![count] = packet.readInt()
-                    anIntArray2199!![count] = packet.readInt()
-                    aStringArray2201!![count] = packet.readString()
+                    anIntArray2200!![count] = buffer.readInt()
+                    anIntArray2191!![count] = buffer.readInt()
+                    anIntArray2199!![count] = buffer.readInt()
+                    aStringArray2201!![count] = buffer.readString()
                 }
             }
             19 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 anIntArray2204 = IntArray(length)
                 aStringArray2198 = arrayOfNulls(length)
                 anIntArray2195 = IntArray(length)
                 anIntArray2190 = IntArray(length)
                 repeat(length) { count ->
-                    anIntArray2204!![count] = packet.readInt()
-                    anIntArray2195!![count] = packet.readInt()
-                    anIntArray2190!![count] = packet.readInt()
-                    aStringArray2198!![count] = packet.readString()
+                    anIntArray2204!![count] = buffer.readInt()
+                    anIntArray2195!![count] = buffer.readInt()
+                    anIntArray2190!![count] = buffer.readInt()
+                    aStringArray2198!![count] = buffer.readString()
                 }
             }
             249 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 if (params == null) {
                     val capacity: Int = calculateCapacity(length)
                     params = HashMap(capacity)
                 }
                 repeat(length) {
-                    val isString = packet.readUnsignedBoolean()
-                    val id = packet.readMedium()
+                    val isString = buffer.readUnsignedBoolean()
+                    val id = buffer.readMedium()
                     params!![id.toLong()] = if (isString) {
-                        packet.readString()
+                        buffer.readString()
                     } else {
-                        packet.readInt()
+                        buffer.readInt()
                     }
                 }
             }

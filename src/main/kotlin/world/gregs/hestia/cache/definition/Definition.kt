@@ -1,17 +1,17 @@
 package world.gregs.hestia.cache.definition
 
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 
 interface Definition {
-    fun readValueLoop(packet: Packet, member: Boolean) {
-        var opcode = packet.readUnsignedByte()
+    fun readValueLoop(buffer: Reader, member: Boolean) {
+        var opcode = buffer.readUnsignedByte()
         while(opcode != 0) {
-            readValues(opcode, packet, member)
-            opcode = packet.readUnsignedByte()
+            readValues(opcode, buffer, member)
+            opcode = buffer.readUnsignedByte()
         }
     }
 
-    fun readValues(opcode: Int, packet: Packet, member: Boolean)
+    fun readValues(opcode: Int, buffer: Reader, member: Boolean)
 
     fun calculateCapacity(i: Int): Int {
         var i = i
@@ -24,7 +24,7 @@ interface Definition {
         return 1 + i
     }
 
-    fun skip(buffer: Packet) {
+    fun skip(buffer: Reader) {
         val length = buffer.readUnsignedByte()
         repeat(length) {
             buffer.skip(1)

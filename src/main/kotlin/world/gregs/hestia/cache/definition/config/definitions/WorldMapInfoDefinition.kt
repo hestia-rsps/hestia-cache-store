@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.config.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 import java.util.*
 
 class WorldMapInfoDefinition : Definition {
@@ -67,16 +67,16 @@ class WorldMapInfoDefinition : Definition {
         }
     }
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         when (opcode) {
-            1 -> anInt1062 = packet.readShort()
-            2 -> anInt1056 = packet.readShort()
-            3 -> name = packet.readString()
-            4 -> anInt1058 = packet.readMedium()
-            5 -> anInt1054 = packet.readMedium()
-            6 -> fontSize = packet.readUnsignedByte()
+            1 -> anInt1062 = buffer.readShort()
+            2 -> anInt1056 = buffer.readShort()
+            3 -> name = buffer.readString()
+            4 -> anInt1058 = buffer.readMedium()
+            5 -> anInt1054 = buffer.readMedium()
+            6 -> fontSize = buffer.readUnsignedByte()
             7 -> {
-                val i_6_ = packet.readUnsignedByte()
+                val i_6_ = buffer.readUnsignedByte()
                 if (0x1 and i_6_ == 0) {
                     aBoolean1047 = false
                 }
@@ -84,77 +84,77 @@ class WorldMapInfoDefinition : Definition {
                     aBoolean1079 = true
                 }
             }
-            8 -> aBoolean1063 = packet.readUnsignedByte() == 1
+            8 -> aBoolean1063 = buffer.readUnsignedByte() == 1
             9 -> {
-                anInt1069 = packet.readShort()
+                anInt1069 = buffer.readShort()
                 if (anInt1069 == 65535) {
                     anInt1069 = -1
                 }
-                anInt1091 = packet.readShort()
+                anInt1091 = buffer.readShort()
                 if (anInt1091 == 65535) {
                     anInt1091 = -1
                 }
-                anInt1087 = packet.readInt()
-                anInt1042 = packet.readInt()
+                anInt1087 = buffer.readInt()
+                anInt1042 = buffer.readInt()
             }
-            in 10..14 -> aStringArray1065[opcode + -10] = packet.readString()
+            in 10..14 -> aStringArray1065[opcode + -10] = buffer.readString()
             15 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 anIntArray1049 = IntArray(length * 2)
                 repeat(length * 2) { count ->
-                    anIntArray1049!![count] = packet.readUnsignedShort()
+                    anIntArray1049!![count] = buffer.readUnsignedShort()
                 }
-                anInt1084 = packet.readInt()
-                val size = packet.readUnsignedByte()
+                anInt1084 = buffer.readInt()
+                val size = buffer.readUnsignedByte()
                 anIntArray1066 = IntArray(size)
                 repeat(size) { count ->
-                    anIntArray1066!![count] = packet.readInt()
+                    anIntArray1066!![count] = buffer.readInt()
                 }
                 aByteArray1057 = ByteArray(length)
                 repeat(length) { count ->
-                    aByteArray1057!![count] = packet.readByte().toByte()
+                    aByteArray1057!![count] = buffer.readByte().toByte()
                 }
             }
             16 -> aBoolean1064 = false
-            17 -> aString1045 = packet.readString()
-            18 -> anInt1093 = packet.readShort()
-            19 -> anInt1067 = packet.readShort()
+            17 -> aString1045 = buffer.readString()
+            18 -> anInt1093 = buffer.readShort()
+            19 -> anInt1067 = buffer.readShort()
             20 -> {
-                anInt1048 = packet.readShort()
+                anInt1048 = buffer.readShort()
                 if (anInt1048 == 65535) {
                     anInt1048 = -1
                 }
-                anInt1044 = packet.readShort()
+                anInt1044 = buffer.readShort()
                 if (anInt1044 == 65535) {
                     anInt1044 = -1
                 }
-                anInt1078 = packet.readInt()
-                anInt1072 = packet.readInt()
+                anInt1078 = buffer.readInt()
+                anInt1072 = buffer.readInt()
             }
-            21 -> anInt1081 = packet.readInt()
-            22 -> anInt1077 = packet.readInt()
+            21 -> anInt1081 = buffer.readInt()
+            22 -> anInt1077 = buffer.readInt()
             23 -> {
-                anInt1074 = packet.readUnsignedByte()
-                anInt1050 = packet.readUnsignedByte()
-                anInt1080 = packet.readUnsignedByte()
+                anInt1074 = buffer.readUnsignedByte()
+                anInt1050 = buffer.readUnsignedByte()
+                anInt1080 = buffer.readUnsignedByte()
             }
             24 -> {
-                anInt1071 = packet.readUnsignedShort()
-                anInt1092 = packet.readUnsignedShort()
+                anInt1071 = buffer.readUnsignedShort()
+                anInt1092 = buffer.readUnsignedShort()
             }
             249 -> {
-                val length = packet.readUnsignedByte()
+                val length = buffer.readUnsignedByte()
                 if (params == null) {
                     val initialCapacity: Int = calculateCapacity(length)
                     params = HashMap(initialCapacity)
                 }
                 repeat(length) {
-                    val isString = packet.readUnsignedBoolean()
-                    val id = packet.readMedium()
+                    val isString = buffer.readUnsignedBoolean()
+                    val id = buffer.readMedium()
                     params!![id.toLong()] = if (isString) {
-                        packet.readString()
+                        buffer.readString()
                     } else {
-                        packet.readInt()
+                        buffer.readInt()
                     }
                 }
             }

@@ -1,7 +1,7 @@
 package world.gregs.hestia.cache.definition.config.definitions
 
 import world.gregs.hestia.cache.definition.Definition
-import world.gregs.hestia.network.packet.Packet
+import world.gregs.hestia.io.Reader
 
 class HitSplatDefinition : Definition {
     var anInt3214: Int = 0
@@ -18,22 +18,22 @@ class HitSplatDefinition : Definition {
     var comparisonType: Int = -1
     var font: Int = -1
 
-    override fun readValues(opcode: Int, packet: Packet, member: Boolean) {
+    override fun readValues(opcode: Int, buffer: Reader, member: Boolean) {
         when (opcode) {
-            1 -> font = packet.readShort()
-            2 -> textColour = packet.readMedium()
-            3 -> icon = packet.readShort()
-            4 -> left = packet.readShort()
-            5 -> middle = packet.readShort()
-            6 -> right = packet.readShort()
-            7 -> offsetX = packet.readUnsignedShort()
-            8 -> amount = packet.readString()
-            9 -> duration = packet.readShort()
-            10 -> offsetY = packet.readUnsignedShort()
+            1 -> font = buffer.readShort()
+            2 -> textColour = buffer.readMedium()
+            3 -> icon = buffer.readShort()
+            4 -> left = buffer.readShort()
+            5 -> middle = buffer.readShort()
+            6 -> right = buffer.readShort()
+            7 -> offsetX = buffer.readUnsignedShort()
+            8 -> amount = buffer.readString()
+            9 -> duration = buffer.readShort()
+            10 -> offsetY = buffer.readUnsignedShort()
             11 -> fade = 0
-            12 -> comparisonType = packet.readUnsignedByte()
-            13 -> anInt3214 = packet.readUnsignedShort()
-            14 -> fade = packet.readShort()
+            12 -> comparisonType = buffer.readUnsignedByte()
+            13 -> anInt3214 = buffer.readUnsignedShort()
+            14 -> fade = buffer.readShort()
         }
     }
 }

@@ -1,4 +1,4 @@
-package world.gregs.hestia.network.packet
+package world.gregs.hestia.io
 
 /**
  * Byte Encode Modification

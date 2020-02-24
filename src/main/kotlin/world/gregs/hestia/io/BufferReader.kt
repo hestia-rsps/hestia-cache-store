@@ -1,16 +1,13 @@
-package world.gregs.hestia.network.packet
+package world.gregs.hestia.io
 
-import io.netty.buffer.ByteBuf
-import io.netty.buffer.Unpooled
+import java.nio.ByteBuffer
+import kotlin.math.pow
 
-class PacketReader(override var opcode: Int = -1, override val type: Packet.Type = Packet.Type.STANDARD, override val buffer: ByteBuf) :
-    Packet {
+open class BufferReader(override val buffer: ByteBuffer) : Reader {
 
-    constructor(packet: Packet) : this(packet.opcode, packet.type, packet.buffer.discardReadBytes())
+    constructor(array: ByteArray) : this(buffer = ByteBuffer.wrap(array))
 
-    constructor(array: ByteArray) : this(buffer = Unpooled.wrappedBuffer(array))
-
-    override val length: Int = buffer.readableBytes()
+    override val length: Int = buffer.remaining()
     private var bitIndex = 0
 
     override fun readSmart(): Int {
@@ -18,13 +15,14 @@ class PacketReader(override var opcode: Int = -1, override val type: Packet.Type
         return if (peek < 128) {
             peek and 0xFF
         } else {
-            buffer.readerIndex(buffer.readerIndex() - 1)
+            buffer.position(buffer.position() - 1)
             readUnsignedShort() - 32768
         }
     }
 
     override fun readBigSmart(): Int {
-        val peek = buffer.getByte(buffer.readerIndex()).toInt()
+        val peek = buffer.get().toInt()
+        buffer.position(buffer.position() - 1)
         return if (peek < -2) {
             readInt() and 0x7fffffff
         } else {
@@ -56,7 +54,7 @@ class PacketReader(override var opcode: Int = -1, override val type: Packet.Type
     override fun readString(): String {
         val sb = StringBuilder()
         var b: Int
-        while (buffer.isReadable) {
+        while (buffer.hasRemaining()) {
             b = readByte()
             if (b == 0) {
                 break
@@ -67,57 +65,25 @@ class PacketReader(override var opcode: Int = -1, override val type: Packet.Type
     }
 
     override fun readBytes(value: ByteArray) {
-        buffer.readBytes(value)
+        buffer.get(value)
     }
 
     override fun readBytes(array: ByteArray, offset: Int, length: Int) {
-        buffer.readBytes(array, offset, length)
-    }
-
-    override fun release() {
-        buffer.release()
-    }
-
-    override fun retain() {
-        buffer.retain()
+        buffer.get(array, offset, length)
     }
 
     override fun skip(amount: Int) {
-        buffer.skipBytes(amount)
+        buffer.position(buffer.position() + amount)
     }
 
     override fun readableBytes(): Int {
-        return buffer.readableBytes()
-    }
-
-    override fun resetReader() {
-        buffer.resetReaderIndex()
-    }
-
-    override fun resetWriter() {
-        buffer.resetWriterIndex()
-    }
-
-    override fun markReader() {
-        buffer.markReaderIndex()
-    }
-
-    override fun markWriter() {
-        buffer.markWriterIndex()
-    }
-
-    override fun reader(): Int {
-        return buffer.readerIndex()
-    }
-
-    override fun writer(): Int {
-        return buffer.writerIndex()
+        return buffer.remaining()
     }
 
     override fun readSigned(type: DataType, modifier: Modifier, order: Endian): Long {
         var longValue = read(type, modifier, order)
         if (type != DataType.LONG) {
-            val max = Math.pow(2.0, type.length * 8.0 - 1).toInt()
+            val max = 2.0.pow(type.length * 8.0 - 1).toInt()
             if (longValue > max - 1) {
                 longValue -= max * 2L
             }
@@ -142,7 +108,7 @@ class PacketReader(override var opcode: Int = -1, override val type: Packet.Type
      */
     private fun read(type: DataType, modifier: Modifier, order: Endian): Long {
         //Check bytes are available
-        if (!buffer.isReadable(type.length)) {
+        if (buffer.remaining() < type.length) {
             throw IndexOutOfBoundsException("Not enough allocated buffer remaining $type.")
         }
 
@@ -157,14 +123,14 @@ class PacketReader(override var opcode: Int = -1, override val type: Packet.Type
                     read = if (i == 0 && modifier != Modifier.NONE) {
                                 //Read with variable modifier transform
                                 when (modifier) {
-                                    Modifier.ADD -> buffer.readByte() - 128
-                                    Modifier.INVERSE -> -buffer.readByte()
-                                    Modifier.SUBTRACT -> 128 - buffer.readByte()
+                                    Modifier.ADD -> buffer.get() - 128
+                                    Modifier.INVERSE -> -buffer.get()
+                                    Modifier.SUBTRACT -> 128 - buffer.get()
                                     else -> throw IllegalArgumentException("Unknown byte modifier")
                                 } and 0xFF
                             } else {
                                 //Read with position shift
-                                buffer.readByte().toInt() and 0xFF shl i * 8
+                                buffer.get().toInt() and 0xFF shl i * 8
                             }.toLong()
                     longValue = longValue or read
                 }
@@ -178,23 +144,22 @@ class PacketReader(override var opcode: Int = -1, override val type: Packet.Type
                     throw IllegalArgumentException("Middle endian doesn't support variable modifier $modifier")
                 }
 
-                val range = listOf(8, 0, 24, 16)
                 //Reverse range if inverse modifier
-                for (i in if (modifier == Modifier.NONE) range else range.reversed()) {
-                    longValue = longValue or (buffer.readByte().toInt() and 0xFF shl i).toLong()
+                for (i in if (modifier == Modifier.NONE) middleEndianRange else middleEndianRange.reversed()) {
+                    longValue = longValue or (buffer.get().toInt() and 0xFF shl i).toLong()
                 }
             }
         }
         return longValue
     }
 
-    override fun startBitAccess(): Packet {
-        bitIndex = buffer.readerIndex() * 8
+    override fun startBitAccess(): Reader {
+        bitIndex = buffer.position() * 8
         return this
     }
 
-    override fun finishBitAccess(): Packet {
-        buffer.readerIndex((bitIndex + 7) / 8)
+    override fun finishBitAccess(): Reader {
+        buffer.position((bitIndex + 7) / 8)
         return this
     }
 
@@ -211,19 +176,20 @@ class PacketReader(override var opcode: Int = -1, override val type: Packet.Type
         bitIndex += bitCount
 
         while (bitCount > bitOffset) {
-            value += buffer.getByte(bytePos++).toInt() and BIT_MASKS[bitOffset] shl bitCount - bitOffset
+            value += buffer.get(bytePos++).toInt() and BIT_MASKS[bitOffset] shl bitCount - bitOffset
             bitCount -= bitOffset
             bitOffset = 8
         }
         value += if (bitCount == bitOffset) {
-            buffer.getByte(bytePos).toInt() and BIT_MASKS[bitOffset]
+            buffer.get(bytePos).toInt() and BIT_MASKS[bitOffset]
         } else {
-            buffer.getByte(bytePos).toInt() shr bitOffset - bitCount and BIT_MASKS[bitCount]
+            buffer.get(bytePos).toInt() shr bitOffset - bitCount and BIT_MASKS[bitCount]
         }
         return value
     }
 
     companion object {
+        private val middleEndianRange = listOf(8, 0, 24, 16)
         /**
          * Bit masks for [readBits]
          */
