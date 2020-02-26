@@ -92,10 +92,10 @@ class ItemDefinition : Definition {
             12 -> cost = buffer.readInt()
             16 -> members = true
             18 -> multiStackSize = buffer.readShort()
-            23 -> primaryMaleModel = buffer.readShort()
-            24 -> secondaryMaleModel = buffer.readShort()
-            25 -> primaryFemaleModel = buffer.readShort()
-            26 -> secondaryFemaleModel = buffer.readShort()
+            23 -> primaryMaleModel = buffer.readUnsignedShort()
+            24 -> secondaryMaleModel = buffer.readUnsignedShort()
+            25 -> primaryFemaleModel = buffer.readUnsignedShort()
+            26 -> secondaryFemaleModel = buffer.readUnsignedShort()
             in 30..34 -> floorOptions[opcode - 30] = buffer.readString()
             in 35..39 -> options[opcode - 35] = buffer.readString()
             40 -> {
