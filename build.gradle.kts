@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "world.gregs.hestia"
-version = "0.0.6"
+version = "0.1.0"
 
 val bintrayUser: String? by project
 val bintrayKey: String? by project
