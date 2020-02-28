@@ -15,7 +15,7 @@ class IndexedSprite {
     lateinit var palette: IntArray
     var alpha: ByteArray? = null
 
-    internal fun method4189() {
+    fun method4189() {
         val bs = raster
         if (alpha == null) {
             for (i in (height shr 1) - 1 downTo 0) {
@@ -51,8 +51,7 @@ class IndexedSprite {
         deltaHeight = i
     }
 
-
-    internal fun method4198() {
+    fun method4198() {
         val bs = ByteArray(width * height)
         var i = 0
         if (alpha == null) {
