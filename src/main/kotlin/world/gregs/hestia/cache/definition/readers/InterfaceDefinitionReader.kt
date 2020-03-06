@@ -19,7 +19,7 @@ class InterfaceDefinitionReader(cacheStore: CacheLibrary) : DefinitionReader<Int
         val components = (0 until size).map { i ->
             Pair(i, InterfaceComponentDefinition().apply {
                 this.id = i + (id shl 16)
-                val data = index.archive(i)?.file(id)?.data
+                val data = index.archive(id)?.file(i)?.data
                 if (data != null) {
                     readValueLoop(BufferReader(data), member)
                 }
